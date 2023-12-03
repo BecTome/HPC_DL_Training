@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+
+OUTPUT_FOLDER = 'output'
+EXERCISE = "ex1_momentum"
+
+N_EPOCHS = 1000
+ls_lr = [0.00001, 0.00005, 0.0001, 0.0005, 0.001, 0.005, 0.01]
+MOMENTUM = 0.1
+
+OUTPUT_DIR = os.path.join(OUTPUT_FOLDER, EXERCISE)
+
+if not os.path.exists(OUTPUT_DIR):
+  os.makedirs(OUTPUT_DIR)
+
+for LEARNING_RATE in ls_lr:
+  # Model parameters
+  W = tf.Variable([.3], dtype=tf.float32)
+  b = tf.Variable([-.3], dtype=tf.float32)
+  # Model input and output
+  x = tf.placeholder(tf.float32)
+  linear_model = W * x + b
+  y = tf.placeholder(tf.float32)
+
+  # loss
+  loss = tf.reduce_sum(tf.square(linear_model - y)) # sum of the squares
+  # optimizer
+  optimizer = tf.train.MomentumOptimizer(LEARNING_RATE, momentum=MOMENTUM)
+  train = optimizer.minimize(loss)
+
+  # training data
+  x_train = [1, 2, 3, 4]
+  y_train = [0, -1, -2, -3]
+  # training loop
+  init = tf.global_variables_initializer()
+  sess = tf.Session()
+  sess.run(init) # reset values to wrong
+
+  curr_W, curr_b, curr_loss = sess.run([W, b, loss], {x: x_train, y: y_train})
+  print("W: %s b: %s loss: %s"%(curr_W, curr_b, curr_loss))
+
+
+  ls_loss = []
+  for i in range(N_EPOCHS):
+    sess.run(train, {x: x_train, y: y_train})
+    curr_W, curr_b, curr_loss = sess.run([W, b, loss], {x: x_train, y: y_train})
+    print("W: %s b: %s loss: %s"%(curr_W, curr_b, curr_loss))
+    ls_loss.append(curr_loss)
+
+  plt.plot(range(N_EPOCHS), ls_loss, label=f"lr = {LEARNING_RATE}")
+  # Use log scale to better visualize the loss
+  plt.yscale("log")
+
+plt.legend()
+plt.title(f"MomentumOptimizer with different LR (Mom={MOMENTUM}))")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+
+filename = f"MomentumOptimizer_{np.min(ls_lr)}-{np.max(ls_lr)}_mom_{MOMENTUM}".replace(".", "_") + ".pdf"
+
+plt.savefig(os.path.join(OUTPUT_DIR, filename), format="pdf", bbox_inches="tight");
+
+
+
+
+
+
+
+
+
