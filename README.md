@@ -12,4 +12,12 @@ Project developed and ran in cluster from Barcelona Supercomputing Center (BSC)
 - Exercise 2:
   - Run `sbatch launch_ex2.sh` in cluster.
   - Output will be generated in [output/ex2_MnistSingleLayer](output/ex2_MnistSingleLayer).
+
+- Exercise 3:
+  - Run `sbatch launch_ex3.sh` in cluster.
+  - Output will be generated in [output/ex3_ImprovePerformance](output/ex3_ImprovePerformance).
+
+- Exercise 4:
+  - Run `sbatch launch_ex4.sh` in cluster.
+  - Output will be generated in [output/ex4_MultiGPU](output/ex4_MultiGPU).
   
